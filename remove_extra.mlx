@@ -1,0 +1,37 @@
+<!DOCTYPE FilterScript>
+<FilterScript>
+ <filter name="Compute normals for point sets">
+  <Param name="K" description="Neighbour num" type="RichInt" value="10" tooltip="The number of neighbors used to estimate normals."/>
+  <Param name="smoothIter" description="Smooth Iteration" type="RichInt" value="0" tooltip="The number of smoothing iteration done on the p used to estimate and propagate normals."/>
+  <Param name="flipFlag" description="Flip normals w.r.t. viewpoint" type="RichBool" value="false" tooltip="If the 'viewpoint' (i.e. scanner position) is known, it can be used to disambiguate normals orientation, so that all the normals will be oriented in the same direction."/>
+  <Param x="0" name="viewPos" z="0" description="Viewpoint Pos." type="RichPoint3f" y="0" tooltip="The viewpoint position can be set by hand (i.e. getting the current viewpoint) or it can be retrieved from mesh camera, if the viewpoint position is stored there."/>
+ </filter>
+ <filter name="Surface Reconstruction: Screened Poisson">
+  <Param name="visibleLayer" description="Merge all visible layers" type="RichBool" value="false" tooltip="Enabling this flag means that all the visible layers will be used for providing the points."/>
+  <Param name="depth" description="Reconstruction Depth" type="RichInt" value="4" tooltip="This integer is the maximum depth of the tree that will be used for surface reconstruction. Running at depth d corresponds to solving on a voxel grid whose resolution is no larger than 2^d x 2^d x 2^d. Note that since the reconstructor adapts the octree to the sampling density, the specified reconstruction depth is only an upper bound. The default value for this parameter is 8."/>
+  <Param name="fullDepth" description="Adaptive Octree Depth" type="RichInt" value="4" tooltip="This integer specifies the depth beyond depth the octree will be adapted. At coarser depths, the octree will be complete, containing all 2^d x 2^d x 2^d nodes. The default value for this parameter is 5."/>
+  <Param name="cgDepth" description="Conjugate Gradients Depth" type="RichInt" value="0" tooltip="This integer is the depth up to which a conjugate-gradients solver will be used to solve the linear system. Beyond this depth Gauss-Seidel relaxation will be used. The default value for this parameter is 0."/>
+  <Param name="scale" description="Scale Factor" type="RichFloat" value="1.1" tooltip="This floating point value specifies the ratio between the diameter of the cube used for reconstruction and the diameter of the samples' bounding cube. The default value is 1.1."/>
+  <Param name="samplesPerNode" description="Minimum Number of Samples" type="RichFloat" value="1.5" tooltip="This floating point value specifies the minimum number of sample points that should fall within an octree node as the octree construction is adapted to sampling density. For noise-free samples, small values in the range [1.0 - 5.0] can be used. For more noisy samples, larger values in the range [15.0 - 20.0] may be needed to provide a smoother, noise-reduced, reconstruction. The default value is 1.5."/>
+  <Param name="pointWeight" description="Interpolation Weight" type="RichFloat" value="4" tooltip="This floating point value specifies the importants that interpolation of the point samples is given in the formulation of the screened Poisson equation. The results of the original (unscreened) Poisson Reconstruction can be obtained by setting this value to 0. The default value for this parameter is 4."/>
+  <Param name="iters" description="Gauss-Seidel Relaxations" type="RichInt" value="8" tooltip="This integer value specifies the number of Gauss-Seidel relaxations to be performed at each level of the hierarchy. The default value for this parameter is 8."/>
+  <Param name="confidence" description="Confidence Flag" type="RichBool" value="false" tooltip="Enabling this flag tells the reconstructor to use the quality as confidence information; this is done by scaling the unit normals with the quality values. When the flag is not enabled, all normals are normalized to have unit-length prior to reconstruction."/>
+  <Param name="preClean" description="Pre-Clean" type="RichBool" value="false" tooltip="Enabling this flag force a cleaning pre-pass on the data removing all unreferenced vertices or vertices with null normals."/>
+ </filter>
+ <filter name="Close Holes">
+  <Param name="MaxHoleSize" description="Max size to be closed " type="RichInt" value="30" tooltip="The size is expressed as number of edges composing the hole boundary"/>
+  <Param name="Selected" description="Close holes with selected faces" type="RichBool" value="false" tooltip="Only the holes with at least one of the boundary faces selected are closed"/>
+  <Param name="NewFaceSelected" description="Select the newly created faces" type="RichBool" value="true" tooltip="After closing a hole the faces that have been created are left selected. Any previous selection is lost. Useful for example for smoothing the newly created holes."/>
+  <Param name="SelfIntersection" description="Prevent creation of selfIntersecting faces" type="RichBool" value="true" tooltip="When closing an holes it tries to prevent the creation of faces that intersect faces adjacent to the boundary of the hole. It is an heuristic, non intersetcting hole filling can be NP-complete."/>
+ </filter>
+ <filter name="Close Holes">
+  <Param name="MaxHoleSize" description="Max size to be closed " type="RichInt" value="30" tooltip="The size is expressed as number of edges composing the hole boundary"/>
+  <Param name="Selected" description="Close holes with selected faces" type="RichBool" value="false" tooltip="Only the holes with at least one of the boundary faces selected are closed"/>
+  <Param name="NewFaceSelected" description="Select the newly created faces" type="RichBool" value="true" tooltip="After closing a hole the faces that have been created are left selected. Any previous selection is lost. Useful for example for smoothing the newly created holes."/>
+  <Param name="SelfIntersection" description="Prevent creation of selfIntersecting faces" type="RichBool" value="true" tooltip="When closing an holes it tries to prevent the creation of faces that intersect faces adjacent to the boundary of the hole. It is an heuristic, non intersetcting hole filling can be NP-complete."/>
+ </filter>
+ <filter name="Remove Isolated pieces (wrt Diameter)">
+  <Param name="MinComponentDiag" description="Enter max diameter of isolated pieces" type="RichAbsPerc" value="0.882501" min="0" tooltip="Delete all the connected components (floating pieces) with a diameter smaller than the specified one" max="8.82501"/>
+  <Param name="removeUnref" description="Remove unfreferenced vertices" type="RichBool" value="true" tooltip="if true, the unreferenced vertices remaining after the face deletion are removed."/>
+ </filter>
+</FilterScript>

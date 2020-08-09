@@ -1,0 +1,47 @@
+<!DOCTYPE FilterScript>
+<FilterScript>
+ <filter name="Transform: Scale, Normalize">
+  <Param value="0.01058" name="axisX" description="X Axis" type="RichFloat" tooltip="Scaling"/>
+  <Param value="1" name="axisY" description="Y Axis" type="RichFloat" tooltip="Scaling"/>
+  <Param value="1" name="axisZ" description="Z Axis" type="RichFloat" tooltip="Scaling"/>
+  <Param value="true" name="uniformFlag" description="Uniform Scaling" type="RichBool" tooltip="If selected an uniform scaling (the same for all the three axis) is applied (the X axis value is used)"/>
+  <Param value="0" name="scaleCenter" enum_val1="barycenter" description="Center of scaling:" enum_cardinality="3" enum_val0="origin" type="RichEnum" tooltip="Choose a method" enum_val2="custom point"/>
+  <Param y="0" x="0" name="customCenter" z="0" description="Custom center" type="RichPoint3f" tooltip="This scaling center is used only if the 'custom point' option is chosen."/>
+  <Param value="false" name="unitFlag" description="Scale to Unit bbox" type="RichBool" tooltip="If selected, the object is scaled to a box whose sides are at most 1 unit length"/>
+  <Param value="true" name="Freeze" description="Freeze Matrix" type="RichBool" tooltip="The transformation is explicitly applied, and the vertex coordinates are actually changed"/>
+  <Param value="false" name="allLayers" description="Apply to all visible Layers" type="RichBool" tooltip="If selected the filter will be applied to all visible mesh layers"/>
+ </filter>
+ <filter name="Compute normals for point sets">
+  <Param value="10" name="K" description="Neighbour num" type="RichInt" tooltip="The number of neighbors used to estimate normals."/>
+  <Param value="0" name="smoothIter" description="Smooth Iteration" type="RichInt" tooltip="The number of smoothing iteration done on the p used to estimate and propagate normals."/>
+  <Param value="false" name="flipFlag" description="Flip normals w.r.t. viewpoint" type="RichBool" tooltip="If the 'viewpoint' (i.e. scanner position) is known, it can be used to disambiguate normals orientation, so that all the normals will be oriented in the same direction."/>
+  <Param y="0" x="0" name="viewPos" z="0" description="Viewpoint Pos." type="RichPoint3f" tooltip="The viewpoint position can be set by hand (i.e. getting the current viewpoint) or it can be retrieved from mesh camera, if the viewpoint position is stored there."/>
+ </filter>
+ <filter name="Surface Reconstruction: Screened Poisson">
+  <Param value="false" name="visibleLayer" description="Merge all visible layers" type="RichBool" tooltip="Enabling this flag means that all the visible layers will be used for providing the points."/>
+  <Param value="6" name="depth" description="Reconstruction Depth" type="RichInt" tooltip="This integer is the maximum depth of the tree that will be used for surface reconstruction. Running at depth d corresponds to solving on a voxel grid whose resolution is no larger than 2^d x 2^d x 2^d. Note that since the reconstructor adapts the octree to the sampling density, the specified reconstruction depth is only an upper bound. The default value for this parameter is 8."/>
+  <Param value="4" name="fullDepth" description="Adaptive Octree Depth" type="RichInt" tooltip="This integer specifies the depth beyond depth the octree will be adapted. At coarser depths, the octree will be complete, containing all 2^d x 2^d x 2^d nodes. The default value for this parameter is 5."/>
+  <Param value="0" name="cgDepth" description="Conjugate Gradients Depth" type="RichInt" tooltip="This integer is the depth up to which a conjugate-gradients solver will be used to solve the linear system. Beyond this depth Gauss-Seidel relaxation will be used. The default value for this parameter is 0."/>
+  <Param value="1.1" name="scale" description="Scale Factor" type="RichFloat" tooltip="This floating point value specifies the ratio between the diameter of the cube used for reconstruction and the diameter of the samples' bounding cube. The default value is 1.1."/>
+  <Param value="1.5" name="samplesPerNode" description="Minimum Number of Samples" type="RichFloat" tooltip="This floating point value specifies the minimum number of sample points that should fall within an octree node as the octree construction is adapted to sampling density. For noise-free samples, small values in the range [1.0 - 5.0] can be used. For more noisy samples, larger values in the range [15.0 - 20.0] may be needed to provide a smoother, noise-reduced, reconstruction. The default value is 1.5."/>
+  <Param value="4" name="pointWeight" description="Interpolation Weight" type="RichFloat" tooltip="This floating point value specifies the importants that interpolation of the point samples is given in the formulation of the screened Poisson equation. The results of the original (unscreened) Poisson Reconstruction can be obtained by setting this value to 0. The default value for this parameter is 4."/>
+  <Param value="8" name="iters" description="Gauss-Seidel Relaxations" type="RichInt" tooltip="This integer value specifies the number of Gauss-Seidel relaxations to be performed at each level of the hierarchy. The default value for this parameter is 8."/>
+  <Param value="false" name="confidence" description="Confidence Flag" type="RichBool" tooltip="Enabling this flag tells the reconstructor to use the quality as confidence information; this is done by scaling the unit normals with the quality values. When the flag is not enabled, all normals are normalized to have unit-length prior to reconstruction."/>
+  <Param value="false" name="preClean" description="Pre-Clean" type="RichBool" tooltip="Enabling this flag force a cleaning pre-pass on the data removing all unreferenced vertices or vertices with null normals."/>
+ </filter>
+ <filter name="Merge Close Vertices">
+  <Param value="6.2857e-5" name="Threshold" max="0.00628568" min="0" description="Merging distance" type="RichAbsPerc" tooltip="All the vertices that closer than this threshold are merged together. Use very small values, default values is 1/10000 of bounding box diagonal. "/>
+ </filter>
+ <filter name="Remove Duplicate Faces"/>
+ <filter name="Remove Duplicate Vertices"/>
+ <filter name="Laplacian Smooth">
+  <Param value="3" name="stepSmoothNum" description="Smoothing steps" type="RichInt" tooltip="The number of times that the whole algorithm (normal smoothing + vertex fitting) is iterated."/>
+  <Param value="true" name="Boundary" description="1D Boundary Smoothing" type="RichBool" tooltip="Smooth boundary edges only by themselves (e.g. the polyline forming the boundary of the mesh is independently smoothed). This can reduce the shrinking on the border but can have strange effects on very small boundaries."/>
+  <Param value="true" name="cotangentWeight" description="Cotangent weighting" type="RichBool" tooltip="Use cotangent weighting scheme for the averaging of the position. Otherwise the simpler umbrella scheme (1 if the edge is present) is used."/>
+  <Param value="false" name="Selected" description="Affect only selection" type="RichBool" tooltip="If checked the filter is performed only on the selected area"/>
+ </filter>
+ <filter name="Invert Faces Orientation">
+  <Param value="false" name="forceFlip" description="Force Flip" type="RichBool" tooltip="If selected, the normals will always be flipped; otherwise, the filter tries to set them outside"/>
+  <Param value="false" name="onlySelected" description="Flip only selected faces" type="RichBool" tooltip="If selected, only selected faces will be affected"/>
+ </filter>
+</FilterScript>
