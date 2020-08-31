@@ -5,7 +5,6 @@
 initial_part_number=21
 #timestep=8 #2 #0 #7500 #2000  #400 #200 # -- numbers in the 1000's represent decimals -> 2000 = .2 
 time_array=(0 2 4 6 8 10 20 30 40 50 60 70 80 90 100 110 120 130 140 150 160 170 180 190 200 400 600 800 1000 1400 2000 2400 3000 3400 4000)
-#time_array=(2000)
 NUMTIME=35
 
 # important parameters for the sim
@@ -23,9 +22,9 @@ y_shift_l=7.0  #7.0
 z_shift_l=3.5  #3.5
 
 # density cutoff
-rho_cut=.02 #0.05  
+rho_cut=.1 #0.02 0.05 
 # partie contribution cutoff
-eta_cut=.000002 #0.000005
+eta_cut=.00001 #0.000002 .000005
 
 # Location of stl and xyz files
 stl_path='/home/joshua/simulations/scale/intermediate/'                                                                                      # PATH TO STL/XYZ FILES
@@ -40,7 +39,7 @@ for ((num=0;num<NUMTIME;num++)); do
   # create file and part names
   timestep=${time_array[num]}
   data_path='/home/joshua/simulations/scale/timeseries/fullT'"$timestep"'SN50400002.dat'                                                     # PATH TO GEORGINA DATA FILES
-  folder_name='/home/joshua/Downloads/particle_FULLset_'"$timestep"'_newbed'                                                                  # PATH TO FOLDER WHERE STEP FILES WILL BE SAVED
+  folder_name='/home/joshua/Downloads/particle_FULLset4_'"$timestep"'_newbed'                                                                  # PATH TO FOLDER WHERE STEP FILES WILL BE SAVED
   mkdir "$folder_name"
   folder_name="$folder_name"
 
@@ -64,7 +63,7 @@ for ((num=0;num<NUMTIME;num++)); do
   #run meshlab to generate the stl files
   for ((numo=0;numo<=PARTS;numo++));
   do
-    snap run meshlab.meshlabserver -i ${xyz_names[numo]} -o ${stl_names[numo]} -s /home/joshua/simulations/scale/mewtwo_script_orig.mlx      # PATH TO PYTHON SCRIPTS -- wont be snap run on TACC
+    snap run meshlab.meshlabserver -i ${xyz_names[numo]} -o ${stl_names[numo]} -s /home/joshua/simulations/scale/mewtwo_script_surfpres.mlx      # PATH TO PYTHON SCRIPTS -- wont be snap run on TACC
   done
 
   # run feeecad script to generate solid bodies and ontacts between partiles                                                                 # PATH TO PYTHON SCRIPTS (line below)

@@ -43,8 +43,8 @@ for((i=0;i<OPTNUM;i++)); do
 
     timestep=${time_array[num]}
     folder_name='/home/joshua/Downloads/particle_FULLset_'"$timestep"'_newbed'
-    number=$(ls "$folder_name" | wc -l)
-    num_array+=("$number")
+    file_number=$(ls "$folder_name" | wc -l)
+    num_array+=("$file_number")
 
     data_path='/home/joshua/simulations/scale/timeseries/fullT'"$timestep"'SN50400002.dat'
     part_number=`python /home/joshua/simulations/scale/part_number.py $data_path $initial_part_number $xsize $ysize $zsize $rho_cut $eta_cut` 
