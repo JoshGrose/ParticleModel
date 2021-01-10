@@ -1,0 +1,8 @@
+﻿# 
+# 01/09/2021 05:49:17
+# The parameters defined in the project are:
+# ,P5 - Heat Flux Magnitude [W m^-2],P6 - Temperature Magnitude [C],P1 - NS_Heat_Flux Surface Area,P2 - NS_Temperature Surface Area,P3 - NS_Heat_Flux Surface Area [m^2],P4 - NS_Temperature Surface Area [m^2]
+# 
+# The following header line defines the name of the columns by reference to the parameters.
+Name,P5,P6,P1,P2,P3,P4
+DP 0,10000000000,22,38068501,25073619,2.10037257010681E-07,5.18545339875712E-07

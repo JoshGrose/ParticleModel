@@ -1,0 +1,46 @@
+import sys
+time = sys.argv[1]
+mesh_type = sys.argv[2]
+mesh_size = sys.argv[3]
+mesh_option_number = sys.argv[4]
+
+
+# replace the first line with overall filepath
+filepath_file = "/work/07329/joshg/stampede2/simulations/ParticleModel/results_mod/particle_FULLset4_" + str(time) + "_newbed/nanoparticle_sim_final.js"
+filepath_write = '"//work//07329//joshg//stampede2//simulations//ParticleModel//results_mod//particle_FULLset4_' + str(time) + '_newbed"'
+line_rep = "var curr_dir = " + filepath_write
+with open(filepath_file, 'r') as file:
+    data = file.readlines()
+
+# perform text swaps for mesh parameters, and change the name of the output file
+# line number paramaters: can be passed in from bash script eventually
+L1 = 
+L2 = 
+L3 = 
+Lfo = 
+
+data[1] = line_rep + '\n'
+
+if mesh_type == 1:  # face sizing
+    line_rep_face = ""
+    data[L1] = line_rep_face + '\n'
+
+    line_rep_fileOut = "" + "faceRefine_option" + str(mesh_option_number) # change the name of the temperature export file
+    data[Lfo] = line_rep_fileOut + '\n'
+
+elif mesh_type == 2:  # body sizing
+    line_rep_BOI = ""
+    data[L2] = line_rep_BOI + '\n'
+
+    line_rep_fileOut = "" + "BOIRefine_option" + str(mesh_option_number)
+    data[Lfo] = line_rep_fileOut + '\n'
+
+elif mesh_type == 3:  # both proximity sizings
+    line_rep_prox = ""
+    data[L3] = line_rep_prox + '\n'
+
+    line_rep_fileOut = "" + "proxRefine_option" + str(mesh_option_number)
+    data[Lfo] = line_rep_fileOut + '\n'
+
+with open(filepath_file, 'w') as file:
+    file.writelines(data)

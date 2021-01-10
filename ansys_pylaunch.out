@@ -1,0 +1,32 @@
+
+New 'c480-011.stampede2.tacc.utexas.edu:10 (joshg)' desktop is c480-011.stampede2.tacc.utexas.edu:10
+
+Starting applications specified in /home1/07329/joshg/.vnc/xstartup
+Log file is /home1/07329/joshg/.vnc/c480-011.stampede2.tacc.utexas.edu:10.log
+
+1
+<class 'int'>
+2.58E-6
+THIS SHOULD ONLY APPEAR TWICE
+rm: cannot remove '.temp2_6_files.backup': No such file or directory
+rm: cannot remove 'temp2_6_files': No such file or directory
+rm: cannot remove 'temp2_6.wbpj': No such file or directory
+rm: cannot remove '_ProjectScratch': No such file or directory
+Start wbjn
+//work//07329//joshg//stampede2//simulations//ParticleModel//sensitivity//mesh_results//meshResult_timestep2_final
+2
+Just before geometry edit
+Just before script write
+1
+2
+3
+Sending DM Command
+DM Command Done
+Send Mechanical Command
+TBB Warning: The number of workers is currently limited to 95. The request for 97 workers is ignored. Further requests for more workers will be silently ignored until the limit changes.
+Mechanical Done
+Results Export Done (End of Script)
+slurmstepd: error: *** JOB 7096464 ON c480-011 CANCELLED AT 2021-01-09T06:11:29 DUE TO TIME LIMIT ***
+******************************************************************************
+*** A fatal error has occurred within AnsysWBU.exe and it must be closed...***
+******************************************************************************

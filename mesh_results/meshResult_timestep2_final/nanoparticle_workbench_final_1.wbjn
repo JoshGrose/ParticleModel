@@ -1,0 +1,174 @@
+﻿# encoding: utf-8
+# 2020 R1
+SetScriptVersion(Version="20.1.164")
+
+# imports
+import os
+
+print("Start wbjn")
+
+# filepaths !!!!!!!!!!!!!
+path = "//work//07329//joshg//stampede2//simulations//ParticleModel//sensitivity//mesh_results//meshResult_timestep2_final"
+print(path)
+
+filepath_js = path # "//work//07329//joshg//stampede2//simulations//ParticleModel//ansys_scripts//"     # filepath to both javascript inserts and (currently) workbench parameter output file
+filepath_output = path # filepath_js + "NanoparticleOutput//Results4//"
+
+# read text file for conductivity values
+import csv
+num_str = path + "//option.txt"
+with open(num_str) as f: #, newline=''
+    reader = csv.reader(f)
+    data = list(reader)
+    option = data[0]
+    option = option[0]
+    index  = data[1]
+    index = index[0]
+    
+print(option)
+
+#with open('C:\Users\jdg4275\Downloads\conductivities.txt') as f: #, newline=''
+#    reader = csv.reader(f)
+#    data = list(reader)
+
+
+template1 = GetTemplate(
+    TemplateName="Steady-State Thermal",
+    Solver="ANSYS")
+system1 = template1.CreateSystem()
+
+#solution1 = system1.GetContainer(ComponentName="Solution")
+#solutionSettings1 = solution1.GetSolutionSettings()
+#solutionSettings1.UpdateOption = "Use application default"
+#solutionSettings1.SolveProcessSetting = "My Computer"
+
+save_str = "//scratch//07329//joshg//ansys//temp" + str(option) + "_" + str(index) + ".wbpj" #line41 #41
+
+Save(
+    FilePath=save_str,
+    Overwrite=True)
+
+print("Just before geometry edit")
+
+geometry1 = system1.GetContainer(ComponentName="Geometry")
+geometry1.Edit() # Interactive = False??
+
+print("Just before script write")
+
+dm_path = filepath_js + "//import_object_scaled_final.js"
+print("1")
+DMscript = open(dm_path, "r")
+print("2")
+DMscriptcommand=DMscript.read()
+print("3")
+DMscript.close()
+print("Sending DM Command")
+
+geometry1.SendCommand(Command = DMscriptcommand)
+
+print("DM Command Done")
+
+engineeringData1 = system1.GetContainer(ComponentName="Engineering Data")
+matl1 = engineeringData1.ImportMaterial(
+    Name="Air",
+    Source="Thermal_Materials.xml")
+matl2 = engineeringData1.ImportMaterial(
+    Name="Copper",
+    Source="Thermal_Materials.xml")
+matl3 = engineeringData1.ImportMaterial(
+    Name="Glass",
+    Source="Thermal_Materials.xml")
+	
+matlProp1 = matl1.GetProperty(Name="Thermal Conductivity")
+matlProp1.SetData(
+    Variables=["Thermal Conductivity"],
+    Values=[["26 [W m^-1 C^-1]"]])
+matlProp2 = matl2.GetProperty(Name="Thermal Conductivity")
+matlProp2.SetData(
+    Variables=["Thermal Conductivity"],
+    Values=[["400000 [W m^-1 C^-1]"]])
+matlProp3 = matl3.GetProperty(Name="Thermal Conductivity")
+matlProp3.SetData(
+    Variables=["Thermal Conductivity"],
+    Values=[["1400 [W m^-1 C^-1]"]])
+
+# Start: Adjusted Thermal Conductivities
+#mats = [];
+#matlProps = [];
+#count = 0;
+#for i in range(len(data[0])):    
+#    mats.append(engineeringData1.CreateMaterial(Name="Adjusted Copper "+str(i+1)))
+#    matlProps.append(mats[i].CreateProperty(
+#        Name="Thermal Conductivity",
+#        Behavior="Isotropic"))
+#    matlProps[i].SetData(
+#        Index=-1,
+#        Variables=["Thermal Conductivity"],
+#        Values=[[str(data[0][i])+"[W m^-1 C^-1]"]])
+# End: Adjusted Thermal Conductivities
+	
+modelComponent1 = system1.GetComponent(Name="Model")
+modelComponent1.Refresh()
+model1 = system1.GetContainer(ComponentName="Model")
+model1.Edit()
+
+mech_path = filepath_js + "//nanoparticle_sim_final_1.js"
+DSscript = open(mech_path, "r")
+DSscriptcommand=DSscript.read()
+DSscript.close()
+
+print("Send Mechanical Command")
+
+model1.SendCommand(Command = DSscriptcommand)
+
+print("Mechanical Done")
+
+Save(
+    FilePath=save_str,
+    Overwrite=True)
+
+#print("Save Complete")
+
+#mech_path = "/work/07329/joshg/stampede2/simulations/ParticleModel/ansys_scripts/empty.js"
+#DSscript = open(mech_path, "r")
+#DSscriptcommand=DSscript.read()
+#DSscript.close()
+
+#model1.SendCommand(Command = DSscriptcommand)
+
+#print("End of Script")
+
+
+#############################################################################################################
+resultsComponent1 = system1.GetComponent(Name="Results")
+resultsComponent1.Update(AllDependencies=True)
+
+mech_path = filepath_js + "//temp_export_1.js"
+DSscript = open(mech_path, "r")
+DSscriptcommand=DSscript.read()
+DSscript.close()
+model1.SendCommand(Command = DSscriptcommand)
+#############################################################################################################
+#print("Temp Export Done")
+
+#Output design points (surface area for now)
+#Create Surface Area Variables
+
+designPoint1 = Parameters.GetDesignPoint(Name="0")
+parameter1 = Parameters.GetParameter(Name="P1")
+parameter1.DisplayText = "NS_Heat_Flux Surface Area"
+parameter2 = Parameters.GetParameter(Name="P2")
+parameter2.DisplayText = "NS_Temperature Surface Area"
+
+out_path = filepath_output + "//ANSYS_table_export.csv"
+# should match the filepath in nanoparticle_sim -- this outputs areas, mechanical outputs temperature results
+Parameters.ExportAllDesignPointsData(FilePath=out_path)
+
+print("Results Export Done (End of Script)")
+
+#Parameters.ExportAllDesignPointsData(FilePath="////austin.utexas.edu//disk//engrstu//me//jdg4275//Downloads//test_ANSYS_table_export.csv")
+
+
+
+
+
