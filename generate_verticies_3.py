@@ -1,8 +1,8 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib as mpl
-from pylab import *
+#import matplotlib.pyplot as plt
+#from mpl_toolkits.mplot3d import Axes3D
+#import matplotlib as mpl
+#from pylab import *
 import struct
 
 def CreateVertexList(file_name, initial_part_number, xsize, ysize, zsize, rho_cut, eta_cut):
@@ -37,8 +37,8 @@ def CreateVertexList(file_name, initial_part_number, xsize, ysize, zsize, rho_cu
             etaCut = eta_cut # 0.005 (before April 25, 2020 # 0.07 (before Feb 26, 2020)
 
             noparts = initial_part_number
-            print noparts
-            print type(noparts)
+            print(noparts)
+            print(type(noparts))
             size = xsize*ysize*zsize
 
             Xd = [0 for x in range(size)]

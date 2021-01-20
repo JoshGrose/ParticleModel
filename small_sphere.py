@@ -1,7 +1,8 @@
 import csv
 import numpy as np
 import sys
-FREECADPATH = '/usr/lib64/freecad/lib' # path to my freecad installation
+#FREECADPATH = '/work/07329/joshg/stampede2/software/conda/miniconda2/pkgs/freecad-0.18.2-py37h648b96a_0/lib' # path to my freecad installation
+FREECADPATH = '/work/07329/joshg/stampede2/software/conda/miniconda2/pkgs/freecad-0.19.alpha2-py38h4ca094a_0/lib'
 sys.path.append(FREECADPATH)
 import FreeCAD
 import FreeCAD as App
@@ -20,7 +21,7 @@ sf = .01058
 scale = mult*sf/1000.0
 min_dist = []
 
-folder_str = '/home/joshua/Downloads/particle_FULLset_' + str(time) + '_newbed' 
+folder_str = '/work/07329/joshg/stampede2/simulations/ParticleModel/results_mod/particle_FULLset4_' + str(time) + '_newbed' 
 fusion_string = 'App.activeDocument().Fusion.Shapes = ['
 fusion_name = "Fusion"
 
@@ -30,7 +31,7 @@ for num in range(part_number):
     sphere_name = "Sphere_small_" + str(num+1)
     export_string = u"%s/%s.stp" % (folder_str,sphere_name)
     dist_arr = []
-    xyz_string = '/home/joshua/simulations/scale/intermediate/point_cloud_part_' + str(num) + '.xyz'
+    xyz_string = '/work/07329/joshg/stampede2/simulations/ParticleModel/intermediate/time_' + str(time) + '/point_cloud_part_' + str(num) + '.xyz'
     xyz_array = np.loadtxt(xyz_string).astype(float)
     col_avg_array = np.mean(xyz_array, axis=0)
     
@@ -59,7 +60,7 @@ for num in range(part_number):
 
     exec_string_volume = "new_vol = App.ActiveDocument." + sphere_name + ".Shape.Volume"
     exec(exec_string_volume)
-    print new_vol
+    print(new_vol)
     if new_vol < 0:
         exec_string_copy = "sphere_copy=App.ActiveDocument." + sphere_name + ".Shape.copy()"
         exec(exec_string_copy)
@@ -74,7 +75,7 @@ for num in range(part_number):
         exec(exec_string_volume_rev)
         App.ActiveDocument.recompute()
 
-    print radius
+    print(radius)
     __objs__=[]
     __objs__.append(FreeCAD.getDocument("Unnamed").getObject(sphere_name))
     Part.export(__objs__, export_string) # exports solid part

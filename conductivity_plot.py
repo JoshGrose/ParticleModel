@@ -13,8 +13,10 @@ q_flux = 1E10
 # Calculate Area Ratio (HF Area/ Total Area)
 timeseries = [0, 2, 4, 6, 8, 10, 20, 40, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 200, 400, 800, 1000, 1400, 2000, 2400, 3000, 3400, 4000]
 
+
+
 # list of names dependant on the type of analysis being performed 
-batch_list = ["FN1200","FN2400","FN3600","FN4800"]
+batch_list = ["batchA","batchB","batchC","batchD"]
 
 for batch_name in batch_list:
 
@@ -40,11 +42,11 @@ for batch_name in batch_list:
             #L = 9E-7 #.077 for 4080 original cut depths #.08 for case 400 #.09 for case 0
             results_string = '/home/joshua/Downloads/Timestep' + str(time) + 'SmoothResults/'
             wb_string = results_string + 'ANSYS_table_export.csv'
-            complete_result_string = results_string + 'Temperature_Results.txt'
+            #complete_result_string = results_string + 'Temperature_Results.txt'
             particle_faces_hot_string = results_string + 'Temperature_Results_Particle_Faces_Hot'
-            particle_faces_cold_string = results_string + 'Temperature_Results_Particle_Faces_Cold'
-            hot_full_string = results_string + 'Temperature_Results_Hot'
-            cold_full_string = results_string + 'Temperature_Results_Cold'
+            #particle_faces_cold_string = results_string + 'Temperature_Results_Particle_Faces_Cold'
+            #hot_full_string = results_string + 'Temperature_Results_Hot'
+            #cold_full_string = results_string + 'Temperature_Results_Cold'
 
 
             vr_string = '/home/joshua/Downloads/particle_set_' + str(time) + '_newbed/volume_ratio.txt'
@@ -93,11 +95,11 @@ for batch_name in batch_list:
             elif key == "Particle":
 
                 df_hot = pandas.read_csv(particle_faces_hot_string, sep='\t')
-                df_cold = pandas.read_csv(particle_faces_cold_string, sep='\t')
+                #df_cold = pandas.read_csv(particle_faces_cold_string, sep='\t')
                 temp_avg_hot = df_hot.iloc[:,4].mean()
-                temp_avg_cold = df_cold.iloc[:,4].mean()
+                temp_avg_cold = 22 #df_cold.iloc[:,4].mean()
 
-            elif key == "Full":
+            elif key == "Full": # also currently broken
 
                 df_hot = pandas.read_csv(hot_full_string, sep='\t')
                 df_cold = pandas.read_csv(cold_full_string, sep='\t')

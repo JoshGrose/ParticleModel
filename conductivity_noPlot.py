@@ -11,7 +11,7 @@ q_flux = 1E10
 
 # Calculate Area Ratio (HF Area/ Total Area)
 
-timeseries = [0, 2, 4, 6, 8, 10, 20, 40, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 200, 400, 800, 1000, 1400, 2000, 2400, 3000, 3400, 4000]
+timeseries = [2] #[0, 2, 4, 6, 8, 10, 20, 40, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 200, 400, 800, 1000, 1400, 2000, 2400, 3000, 3400, 4000]
 
 with open('/home/joshua/Downloads/conductivity_file.csv', 'w') as file_1:
     writer = csv.writer(file_1, delimiter = '\t',lineterminator='\n',)

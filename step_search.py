@@ -9,7 +9,7 @@ f  = open(air_path,"r")
 
 step_file = f.read()
 
-pattern = "translator 6.8 .\..\.."
+pattern = "translator 7.4 .\..\.."
 
 num_occ = len(re.findall(pattern, step_file))/2
 

@@ -1,6 +1,7 @@
 # Macro Begin: /home/joshua/.FreeCAD/create_block.FCMacro +++++++++++++++++++++++++++++++++++++++++++++++++
 # Macro Begin: /home/joshua/.FreeCAD/extra_macro.FCMacro +++++++++++++++++++++++++++++++++++++++++++++++++
-FREECADPATH = '/usr/lib64/freecad/lib' # path to my freecad installation
+#FREECADPATH = '/work/07329/joshg/stampede2/software/conda/miniconda2/pkgs/freecad-0.18.2-py37h648b96a_0/lib' # path to my freecad installation
+FREECADPATH = '/work/07329/joshg/stampede2/software/conda/miniconda2/pkgs/freecad-0.19.alpha2-py38h4ca094a_0/lib'
 import sys
 sys.path.append(FREECADPATH)
 
@@ -24,10 +25,10 @@ def form_glass(minum, x_low, x_high, y_low, y_high, folder_name):
     #Gui.activeDocument().setEdit('Sketch')
     #Gui.getDocument('Unnamed').resetEdit()
     App.getDocument('Unnamed').recompute()
-    App.ActiveDocument.Sketch.addGeometry(Part.Line(App.Vector(x_low,y_low,0),App.Vector(x_high,y_low,0))) # these 4 create the rectangle
-    App.ActiveDocument.Sketch.addGeometry(Part.Line(App.Vector(x_high,y_low,0),App.Vector(x_high,y_high,0))) # x, y
-    App.ActiveDocument.Sketch.addGeometry(Part.Line(App.Vector(x_high,y_high,0),App.Vector(x_low,y_high,0)))
-    App.ActiveDocument.Sketch.addGeometry(Part.Line(App.Vector(x_low, y_high,0),App.Vector(x_low,y_low,0)))
+    App.ActiveDocument.Sketch.addGeometry(Part.LineSegment(App.Vector(x_low,y_low,0),App.Vector(x_high,y_low,0))) # these 4 create the rectangle
+    App.ActiveDocument.Sketch.addGeometry(Part.LineSegment(App.Vector(x_high,y_low,0),App.Vector(x_high,y_high,0))) # x, y
+    App.ActiveDocument.Sketch.addGeometry(Part.LineSegment(App.Vector(x_high,y_high,0),App.Vector(x_low,y_high,0)))
+    App.ActiveDocument.Sketch.addGeometry(Part.LineSegment(App.Vector(x_low, y_high,0),App.Vector(x_low,y_low,0)))
 
     App.ActiveDocument.Sketch.addConstraint(Sketcher.Constraint('Coincident',0,2,1,1)) 
     App.ActiveDocument.Sketch.addConstraint(Sketcher.Constraint('Coincident',1,2,2,1)) 
@@ -61,7 +62,7 @@ def form_glass(minum, x_low, x_high, y_low, y_high, folder_name):
 
 
     App.activeDocument().addObject("PartDesign::Pad","Pad")
-    App.activeDocument().Pad.Sketch = App.activeDocument().Sketch
+    App.activeDocument().Pad.Profile = App.activeDocument().Sketch  #Sketch = App.activeDocument().Sketch
     App.activeDocument().Pad.Length = 10.0
     App.ActiveDocument.recompute()
 #Gui.activeDocument().hide("Sketch")
@@ -99,10 +100,10 @@ def build_air(minum,  x_low, x_high, y_low, y_high, z_high):
     App.activeDocument().Sketch001.Placement = App.Placement(App.Vector(0.000000,0.000000, minum),App.Rotation(0.000000,0.000000,0.000000,1.000000))
 
     App.getDocument('Unnamed').recompute()
-    App.ActiveDocument.Sketch001.addGeometry(Part.Line(App.Vector(x_low,y_low,0),App.Vector(x_high,y_low,0))) # these 4 create the rectangle
-    App.ActiveDocument.Sketch001.addGeometry(Part.Line(App.Vector(x_high,y_low,0),App.Vector(x_high,y_high,0))) # x, y
-    App.ActiveDocument.Sketch001.addGeometry(Part.Line(App.Vector(x_high,y_high,0),App.Vector(x_low,y_high,0)))
-    App.ActiveDocument.Sketch001.addGeometry(Part.Line(App.Vector(x_low,y_high,0),App.Vector(x_low,y_low,0)))
+    App.ActiveDocument.Sketch001.addGeometry(Part.LineSegment(App.Vector(x_low,y_low,0),App.Vector(x_high,y_low,0))) # these 4 create the rectangle
+    App.ActiveDocument.Sketch001.addGeometry(Part.LineSegment(App.Vector(x_high,y_low,0),App.Vector(x_high,y_high,0))) # x, y
+    App.ActiveDocument.Sketch001.addGeometry(Part.LineSegment(App.Vector(x_high,y_high,0),App.Vector(x_low,y_high,0)))
+    App.ActiveDocument.Sketch001.addGeometry(Part.LineSegment(App.Vector(x_low,y_high,0),App.Vector(x_low,y_low,0)))
 
     App.ActiveDocument.Sketch001.addConstraint(Sketcher.Constraint('Coincident',0,2,1,1))
     App.ActiveDocument.Sketch001.addConstraint(Sketcher.Constraint('Coincident',1,2,2,1))
@@ -119,7 +120,7 @@ def build_air(minum,  x_low, x_high, y_low, y_high, z_high):
     App.getDocument('Unnamed').recompute()
 
     App.activeDocument().addObject("PartDesign::Pad","Pad001")
-    App.activeDocument().Pad001.Sketch = App.activeDocument().Sketch001
+    App.activeDocument().Pad001.Profile = App.activeDocument().Sketch001
     App.activeDocument().Pad001.Length = 10.0
     App.ActiveDocument.recompute()
 
@@ -153,10 +154,10 @@ def build_cutting_block(minum, x_low, x_high, y_low, y_high):
     App.activeDocument().Sketch002.Placement = App.Placement(App.Vector(0.000000,0.000000, minum-cb_shift),App.Rotation(0.000000,0.000000,0.000000,1.000000)) #-40 needs to be parameterized
 
     App.getDocument('Unnamed').recompute()
-    App.ActiveDocument.Sketch002.addGeometry(Part.Line(App.Vector(x_low-cb_shift,y_low-cb_shift,0),App.Vector(x_high+cb_shift,y_low-cb_shift,0))) # these 4 create the rectangle
-    App.ActiveDocument.Sketch002.addGeometry(Part.Line(App.Vector(x_high+cb_shift,y_low-cb_shift,0),App.Vector(x_high+cb_shift,y_high+cb_shift,0))) # x, y
-    App.ActiveDocument.Sketch002.addGeometry(Part.Line(App.Vector(x_high+cb_shift,y_high+cb_shift,0),App.Vector(x_low-cb_shift,y_high+cb_shift,0))) # y's were ajdested for cuts on all sides
-    App.ActiveDocument.Sketch002.addGeometry(Part.Line(App.Vector(x_low-cb_shift,y_high+cb_shift,0),App.Vector(x_low-cb_shift,y_low-cb_shift,0)))
+    App.ActiveDocument.Sketch002.addGeometry(Part.LineSegment(App.Vector(x_low-cb_shift,y_low-cb_shift,0),App.Vector(x_high+cb_shift,y_low-cb_shift,0))) # these 4 create the rectangle
+    App.ActiveDocument.Sketch002.addGeometry(Part.LineSegment(App.Vector(x_high+cb_shift,y_low-cb_shift,0),App.Vector(x_high+cb_shift,y_high+cb_shift,0))) # x, y
+    App.ActiveDocument.Sketch002.addGeometry(Part.LineSegment(App.Vector(x_high+cb_shift,y_high+cb_shift,0),App.Vector(x_low-cb_shift,y_high+cb_shift,0))) # y's were ajdested for cuts on all sides
+    App.ActiveDocument.Sketch002.addGeometry(Part.LineSegment(App.Vector(x_low-cb_shift,y_high+cb_shift,0),App.Vector(x_low-cb_shift,y_low-cb_shift,0)))
 
     App.ActiveDocument.Sketch002.addConstraint(Sketcher.Constraint('Coincident',0,2,1,1))
     App.ActiveDocument.Sketch002.addConstraint(Sketcher.Constraint('Coincident',1,2,2,1))
@@ -173,7 +174,7 @@ def build_cutting_block(minum, x_low, x_high, y_low, y_high):
     App.getDocument('Unnamed').recompute()
 
     App.activeDocument().addObject("PartDesign::Pad","Pad002")
-    App.activeDocument().Pad002.Sketch = App.activeDocument().Sketch002
+    App.activeDocument().Pad002.Profile = App.activeDocument().Sketch002
     App.activeDocument().Pad002.Length = 10.0
     App.ActiveDocument.recompute()
 
@@ -191,10 +192,10 @@ def build_air_ext(minum,  x_low, x_high, y_low, y_high):
     App.activeDocument().Sketch003.Placement = App.Placement(App.Vector(0.000000,0.000000, minum),App.Rotation(0.000000,0.000000,0.000000,1.000000))
 
     App.getDocument('Unnamed').recompute()
-    App.ActiveDocument.Sketch003.addGeometry(Part.Line(App.Vector(x_low,y_low,0),App.Vector(x_high,y_low,0))) # these 4 create the rectangle
-    App.ActiveDocument.Sketch003.addGeometry(Part.Line(App.Vector(x_high,y_low,0),App.Vector(x_high,y_high,0))) # x, y
-    App.ActiveDocument.Sketch003.addGeometry(Part.Line(App.Vector(x_high,y_high,0),App.Vector(x_low,y_high,0)))
-    App.ActiveDocument.Sketch003.addGeometry(Part.Line(App.Vector(x_low,y_high,0),App.Vector(x_low,y_low,0)))
+    App.ActiveDocument.Sketch003.addGeometry(Part.LineSegment(App.Vector(x_low,y_low,0),App.Vector(x_high,y_low,0))) # these 4 create the rectangle
+    App.ActiveDocument.Sketch003.addGeometry(Part.LineSegment(App.Vector(x_high,y_low,0),App.Vector(x_high,y_high,0))) # x, y
+    App.ActiveDocument.Sketch003.addGeometry(Part.LineSegment(App.Vector(x_high,y_high,0),App.Vector(x_low,y_high,0)))
+    App.ActiveDocument.Sketch003.addGeometry(Part.LineSegment(App.Vector(x_low,y_high,0),App.Vector(x_low,y_low,0)))
 
     App.ActiveDocument.Sketch003.addConstraint(Sketcher.Constraint('Coincident',0,2,1,1))
     App.ActiveDocument.Sketch003.addConstraint(Sketcher.Constraint('Coincident',1,2,2,1))
@@ -211,7 +212,7 @@ def build_air_ext(minum,  x_low, x_high, y_low, y_high):
     App.getDocument('Unnamed').recompute()
 
     App.activeDocument().addObject("PartDesign::Pad","Pad003")
-    App.activeDocument().Pad003.Sketch = App.activeDocument().Sketch003
+    App.activeDocument().Pad003.Profile = App.activeDocument().Sketch003
     App.activeDocument().Pad003.Length = 10.0
     App.ActiveDocument.recompute()
 

@@ -1,4 +1,5 @@
-FREECADPATH = '/usr/lib64/freecad/lib' # path to my freecad installation
+#FREECADPATH = '/work/07329/joshg/stampede2/software/conda/miniconda2/pkgs/freecad-0.18.2-py37h648b96a_0/lib' # path to my freecad installation
+FREECADPATH = '/work/07329/joshg/stampede2/software/conda/miniconda2/pkgs/freecad-0.19.alpha2-py38h4ca094a_0/lib'
 import sys
 sys.path.append(FREECADPATH)
 import FreeCAD
@@ -49,7 +50,7 @@ def fc_main(folder_name, initial_part_number, part_number, file_name, stl_path, 
     cut_number+=1
     CB_name, size_temp, bool_temp = cad.cut(CB_name, glass_name, cut_number, temp_vol, 1)
     cut_number+=1
-    print "Cutting Block Formed \n"
+    print("Cutting Block Formed \n")
 
  
     # remove the bottom block of air from air_ext -- give air_ext its final shape, resting above the domain
@@ -57,12 +58,25 @@ def fc_main(folder_name, initial_part_number, part_number, file_name, stl_path, 
     cut_number+=1
     cad.save_and_export(folder_name, air_ext_name, export_names[1])
 
-
+    # perform air hollowing cuts -- replace air block here with bubble -- new bubble air block will need to be sliced by cutting block 
     for part_name in unordered_part_names:
-        print "Air Cut -- Cut Begins Here"
+        print("Air Cut -- Cut Begins Here")
         air_name, size_temp, bool_temp = cad.cut(air_name, part_name, cut_number, air_volume, 1) # havent had an issue here either
         cut_number += 1
     cad.save_and_export(folder_name,air_name,export_names[0])
+
+
+    ################################################################## NEW STUFF #######################################################################
+
+    export_names.append("AirBlock2")
+    bubble_name_input = "bubble_solid.stp"
+    bubble_name = "bubble_solid"
+    cad.import_object(folder_name, bubble_name_input)
+    bubble_name = cad.intersect(air_name,bubble_name,cut_number)    
+    cad.save_and_export(folder_name,bubble_name,export_names[2])
+
+    ################################################################## NEW STUFF #######################################################################
+
 
     #calculate conductivities
     k_array = cad.calculate_conductivities(volume_array) # pass to ANSYS eventually
@@ -92,7 +106,7 @@ def fc_main(folder_name, initial_part_number, part_number, file_name, stl_path, 
                         # if size check fails, reverse the order of the cut
                         temp_name, size, bool_temp = cad.cut(unordered_part_names[tool], unordered_part_names[object], cut_number, volume_array[object], 0)
                         unordered_part_names[tool] = temp_name #temporary variable for the output name
-                        print "Number of Faces is too Small to be Realistic: Replace Existing Cut with the Reverse Cut"
+                        print("Number of Faces is too Small to be Realistic: Replace Existing Cut with the Reverse Cut")
                         cut_number += 1
 
                     else:
@@ -109,7 +123,7 @@ def fc_main(folder_name, initial_part_number, part_number, file_name, stl_path, 
             name, size, CB_shrink = cad.cut(unordered_part_names[part], CB_name, cut_number, volume_array[part], 0)
             cut_number +=1
             unordered_part_names[part] = name
-            print "Cutting Block Particle Cut "
+            print("Cutting Block Particle Cut ")
 
     # similar to above, use the glass block to cut the bottoms off the intersecting particles
     glass_cut_list = prologue.get_glass_intersections(minum, x_low, x_high, y_low, y_high, file_name, initial_part_number, xsize, ysize, zsize, rho_cut, eta_cut)
@@ -118,7 +132,7 @@ def fc_main(folder_name, initial_part_number, part_number, file_name, stl_path, 
     for part in glass_cut_list:
         GP_bool = False
         while GP_bool == False:
-            print "Glass Cut -- Cut Begins Here"
+            print("Glass Cut -- Cut Begins Here")
             name, size, GP_bool = cad.cut(unordered_part_names[part], glass_name, cut_number, volume_array[part], 0)
             cut_number +=1
             unordered_part_names[part] = name
@@ -142,7 +156,7 @@ def fc_main(folder_name, initial_part_number, part_number, file_name, stl_path, 
 
     bound_path = folder_name + "/part_bound.txt"
     fw = open(bound_path,"w+")
-    fw.write(str(x_low) + "\n" + str(x_high) + "\n " + str(y_low) + "\n" + str(y_high) + "\n" + str(z_low) + "\n" + str(z_high))
+    fw.write(str(x_low) + "\n" + str(x_high) + "\n" + str(y_low) + "\n" + str(y_high) + "\n" + str(z_low) + "\n" + str(z_high))
     fw.close()
 
     num_path = folder_name + "/part_num.txt"

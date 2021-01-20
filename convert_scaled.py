@@ -1,4 +1,5 @@
-FREECADPATH = '/usr/lib64/freecad/lib' # path to my freecad installation
+#FREECADPATH = '/work/07329/joshg/stampede2/software/conda/miniconda2/pkgs/freecad-0.18.2-py37h648b96a_0/lib' # path to my freecad installation
+FREECADPATH = '/work/07329/joshg/stampede2/software/conda/miniconda2/pkgs/freecad-0.19.alpha2-py38h4ca094a_0/lib'
 import sys
 sys.path.append(FREECADPATH)
 import FreeCAD

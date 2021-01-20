@@ -3,9 +3,10 @@
 # BASH SCRIPT FOR RUNNING SINGLE TIMESTEP STEP FILE GENERATOR
 
 initial_part_number=21
-#timestep=8 #2 #0 #7500 #2000  #400 #200 # -- numbers in the 1000's represent decimals -> 2000 = .2 
-time_array=(0 2 4 6 8 10 20 30 40 50 60 70 80 90 100 110 120 130 140 150 160 170 180 190 200 400 600 800 1000 1400 2000 2400 3000 3400 4000)
-NUMTIME=35
+#timestep=400 #2 #0 #7500 #2000  #400 #200 # -- numbers in the 1000's represent decimals -> 2000 = .2 
+#time_array=(0 2 4 6 8 10 20 30 40 50 60 70 80 90 100 110 120 130 140 150 160 170 180 190 200 400 600 800 1000 1400 2000 2400 3000 3400 4000)
+time_array=(4)
+NUMTIME=1
 
 # important parameters for the sim
 # size of the domain
@@ -27,7 +28,7 @@ rho_cut=.1 #0.02 0.05
 eta_cut=.00001 #0.000002 .000005
 
 # Location of stl and xyz files
-stl_path='/home/joshua/simulations/scale/intermediate/'                                                                                      # PATH TO STL/XYZ FILES
+stl_path='/work/07329/joshg/stampede2/simulations/ParticleModel/intermediate/'                                                                                      # PATH TO STL/XYZ FILES
 #stl_path='/home/joshua/simulations/scale/temp/'
 
 # build georgina filenames
@@ -38,17 +39,17 @@ declare -a fol_arr=()
 for ((num=0;num<NUMTIME;num++)); do
   # create file and part names
   timestep=${time_array[num]}
-  data_path='/home/joshua/simulations/scale/timeseries/fullT'"$timestep"'SN50400002.dat'                                                     # PATH TO GEORGINA DATA FILES
-  folder_name='/home/joshua/Downloads/particle_FULLset4_'"$timestep"'_newbed'                                                                  # PATH TO FOLDER WHERE STEP FILES WILL BE SAVED
+  data_path='/work/07329/joshg/stampede2/simulations/ParticleModel/timeseries/fullT'"$timestep"'SN50400002.dat'                                                     # PATH TO GEORGINA DATA FILES
+  folder_name='/work/07329/joshg/stampede2/simulations/ParticleModel/results/particle_FULLset4_'"$timestep"'_newbed'                                                                  # PATH TO FOLDER WHERE STEP FILES WILL BE SAVED
   mkdir "$folder_name"
   folder_name="$folder_name"
 
   # get the number of particles in the current system
-  part_number=`python /home/joshua/simulations/scale/part_number.py $data_path $initial_part_number $xsize $ysize $zsize $rho_cut $eta_cut`                    #  PATH TO PYTHON SCRIPTS
+  part_number=`python /work/07329/joshg/stampede2/simulations/ParticleModel/part_number.py $data_path $initial_part_number $xsize $ysize $zsize $rho_cut $eta_cut`                    #  PATH TO PYTHON SCRIPTS
   PARTS=$((part_number - 1)) # variable controlling other loops
 
   # generate the point clouds by filtering for only the surface points
-  python /home/joshua/simulations/scale/finalize_point_clouds.py $data_path $initial_part_number $xsize $ysize $zsize $eta_cut $rho_cut $stl_path< /dev/null                   #  PATH TO PYTHON SCRIPTS
+  python /work/07329/joshg/stampede2/simulations/ParticleModel/finalize_point_clouds.py $data_path $initial_part_number $xsize $ysize $zsize $eta_cut $rho_cut $stl_path< /dev/null                   #  PATH TO PYTHON SCRIPTS
 
   # create list of xyz and stl filenames to pass into meshlab
   xyz_names=()
@@ -63,14 +64,14 @@ for ((num=0;num<NUMTIME;num++)); do
   #run meshlab to generate the stl files
   for ((numo=0;numo<=PARTS;numo++));
   do
-    snap run meshlab.meshlabserver -i ${xyz_names[numo]} -o ${stl_names[numo]} -s /home/joshua/simulations/scale/mewtwo_script_surfpres.mlx      # PATH TO PYTHON SCRIPTS -- wont be snap run on TACC
+    /work/07329/joshg/stampede2/Meshlab/meshlab/distrib/meshlabserver -i ${xyz_names[numo]} -o ${stl_names[numo]} -s /work/07329/joshg/stampede2/simulations/ParticleModel/mewtwo_script_surfpres.mlx      # PATH TO PYTHON SCRIPTS
   done
 
   # run feeecad script to generate solid bodies and ontacts between partiles                                                                 # PATH TO PYTHON SCRIPTS (line below)
-  python /home/joshua/simulations/scale/convert_scaled.py $folder_name $initial_part_number $part_number $data_path $stl_path $xsize $ysize $zsize $x_shift_h $x_shift_l $y_shift_h $y_shift_l $z_shift_l $rho_cut $eta_cut  < /dev/null
+  python /work/07329/joshg/stampede2/simulations/ParticleModel/convert_scaled.py $folder_name $initial_part_number $part_number $data_path $stl_path $xsize $ysize $zsize $x_shift_h $x_shift_l $y_shift_h $y_shift_l $z_shift_l $rho_cut $eta_cut  < /dev/null
 
   # determine the number of pieces of air are contained in the air block step file
-  python /home/joshua/simulations/scale/step_search.py $folder_name                                                                          # PATH TO PYTHON SCRIPTS
+  python /work/07329/joshg/stampede2/simulations/ParticleModel/step_search.py $folder_name                                                                          # PATH TO PYTHON SCRIPTS
   echo "Run Complete"
 
   # clean folder

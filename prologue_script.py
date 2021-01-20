@@ -24,12 +24,12 @@ def get_order_by_size(file_name, initial_part_number, xsize, ysize, zsize, rho_c
                 if index not in ordered_part_set:
                     ordered_part_set.append(index)
 
-    print ordered_part_set
+    print(ordered_part_set)
     return ordered_part_set # correctly ordered
 
 def detect_interactions(part_set, file_name, initial_part_number, xsize, ysize, zsize,  rho_cut, eta_cut):
-    print "Part Set:"
-    print part_set
+    print("Part Set:")
+    print(part_set)
     #num_of_parts = len(part_sets)
     points_container = get_points.xyz_pass(file_name, initial_part_number, xsize, ysize, zsize, rho_cut, eta_cut) # list of xyz surface coordinates
 
@@ -62,9 +62,9 @@ def detect_interactions(part_set, file_name, initial_part_number, xsize, ysize, 
                     if part_set.index(tool) < part_set.index(base):
                         interactions_matrix[tool][base] = 1 # note the jk order
 
-    print interactions_array
-    print interactions_matrix
-    print str(num_of_parts) + " number of parts passed from surface generator"
+    print(interactions_array)
+    print(interactions_matrix)
+    print(str(num_of_parts) + " number of parts passed from surface generator")
     return interactions_array, interactions_matrix # correctly ordered
 
 def get_air_intersections(minum, x_low, x_high, y_low, y_high, file_name, initial_part_number, rho_cut, eta_cut): # this still has it split into 4 quadrants... it works, but is unnessary as of now
@@ -111,10 +111,10 @@ def get_air_intersections(minum, x_low, x_high, y_low, y_high, file_name, initia
         if in_block_4: # 0 or 2?
             air_cut_list_4.append(i)
 
-    print air_cut_list_1
-    print air_cut_list_2
-    print air_cut_list_3
-    print air_cut_list_4
+    print(air_cut_list_1)
+    print(air_cut_list_2)
+    print(air_cut_list_3)
+    print(air_cut_list_4)
     air_cut_list.append(air_cut_list_1)
     air_cut_list.append(air_cut_list_2)
     air_cut_list.append(air_cut_list_3)
@@ -153,7 +153,7 @@ def get_CB_intersections(minum, x_low, x_high, y_low, y_high, file_name, initial
         if in_block_CB: # 0 or 2?
             CB_interactions_list.append(i)
 
-    print CB_interactions_list
+    print(CB_interactions_list)
     return CB_interactions_list
 
 def get_glass_intersections(minum, x_low, x_high, y_low, y_high, file_name, initial_part_number, xsize, ysize, zsize, rho_cut, eta_cut):
@@ -185,6 +185,16 @@ def get_glass_intersections(minum, x_low, x_high, y_low, y_high, file_name, init
         if in_block_glass: # 0 or 2?
             glass_interactions_list.append(i)
 
-    print glass_interactions_list
+    print(glass_interactions_list)
     return glass_interactions_list
 
+
+def get_bubble_intersections(radii_list, center_list, minum, x_low, x_high, y_low, y_high):
+
+    sphere_interactions_list = []
+    bubble_cut_list = []
+    for i in range(len(radii_list)):
+        if (center_list[i][0] + radii_list[i] > x_high) or (center_list[i][0] - radii_list[i] < x_low) or (center_list[i][1] + radii_list[i] > y_high) or (center_list[i][1] - radii_list[i] < y_low) or (center_list[i][2] - radii_list[i] < minum):        
+            bubble_cut_list.append(i)
+
+    return bubble_cut_list
